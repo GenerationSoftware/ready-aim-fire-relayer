@@ -11,7 +11,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { http, encodeFunctionData, createWalletClient, decodeFunctionData, decodeAbiParameters, keccak256, toBytes } from 'viem';
+import { http, encodeFunctionData, createWalletClient, decodeErrorResult, keccak256, toBytes } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { localhost } from 'viem/chains';
 import { ReadyAimFireABI } from './abi/ReadyAimFireABI';
@@ -60,6 +60,19 @@ const corsHeaders = {
 function decodeCallData(data: `0x${string}`) {
 	try {
 		const decoded = decodeFunctionData({
+			abi: [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI, ...BasicDeckABI],
+			data,
+		});
+		return decoded;
+	} catch (error) {
+		console.error('Error decoding call data:', error);
+		return null;
+	}
+}
+
+function decodeError(data: `0x${string}`) {
+	try {
+		const decoded = decodeErrorResult({
 			abi: [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI, ...BasicDeckABI],
 			data,
 		});
@@ -161,11 +174,15 @@ export default {
 			console.log('Transaction sent:', transactionHash);
 			return new Response(JSON.stringify({ transactionHash }), { headers: corsHeaders });
 		} catch (error: any) {
+			let message = error.message;
+			console.log('Error message:', error.message);
+			console.log('Error short message:', error.shortMessage);
 			// Extract error selector and data from error message
 			const errorMatch = error.shortMessage.match(/(0x[a-fA-F0-9]{8}):\s*([a-fA-F0-9]*)/);
 			if (errorMatch) {
 				const errorSelector = errorMatch[1] as `0x${string}`;
-				
+				const errorData = errorMatch[2] as `0x${string}`;
+				console.log({ errorData })
 				// Find error definition in ABIs
 				const allABIs = [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI];
 				const errorDef = allABIs.find(
@@ -174,13 +191,21 @@ export default {
 				) as any;
 
 				if (errorDef) {
-					console.log('Error:', errorDef.name);
+					console.log('Error:', errorDef);
 				} else {
 					console.log('Unknown error selector:', errorSelector);
 				}
+
+				if (errorDef.name == 'FailedCallWithMessage') {
+					const decodedError = decodeError(`${errorSelector}${errorData}`);
+					console.log({ decodedError })
+					const nestedError = decodeError(decodedError.args[0] as `0x${string}`);
+					console.log({ nestedError })
+					message = nestedError
+				}
 			}
 
-			return new Response(JSON.stringify({ error: error.message }), {
+			return new Response(JSON.stringify({ error: message }), {
 				status: 400,
 				headers: corsHeaders,
 			});
