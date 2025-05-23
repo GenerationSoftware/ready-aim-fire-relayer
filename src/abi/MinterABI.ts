@@ -1,0 +1,1 @@
+export const MinterABI = [{"type":"function","name":"mintCollection","inputs":[{"name":"basicDeck","type":"address","internalType":"contract BasicDeck"},{"name":"to","type":"address","internalType":"address"}],"outputs":[],"stateMutability":"nonpayable"}] as const

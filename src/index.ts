@@ -11,10 +11,11 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { http, encodeFunctionData, createWalletClient, decodeFunctionData, createPublicClient } from 'viem';
+import { http, encodeFunctionData, createWalletClient, decodeFunctionData, decodeAbiParameters, keccak256, toBytes } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { localhost } from 'viem/chains';
 import { ReadyAimFireABI } from './abi/ReadyAimFireABI';
+import { BasicDeckABI } from './abi/BasicDeckABI';
 import { ReadyAimFireFactoryABI } from './abi/ReadyAimFireFactoryABI';
 import { ERC2771ForwarderABI } from './abi/ERC2771ForwarderABI';
 
@@ -59,7 +60,7 @@ const corsHeaders = {
 function decodeCallData(data: `0x${string}`) {
 	try {
 		const decoded = decodeFunctionData({
-			abi: [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI],
+			abi: [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI, ...BasicDeckABI],
 			data,
 		});
 		return decoded;
@@ -103,10 +104,16 @@ function decodeCallData(data: `0x${string}`) {
  */
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		console.log('Request received:', request.method);
+		console.log('Request received:', { url: request.url  });
 		if (request.method === 'OPTIONS') {
 			return new Response(null, { headers: corsHeaders });
 		}
+
+		const json = await request.json() as RequestBody;
+
+		console.log('Request body:', json);
+
+		console.log('Calldata ', decodeCallData(json.data));
 
 		if (!env.PRIVATE_KEY) {
 			return new Response(JSON.stringify({ error: 'Private key is not defined' }), {
@@ -115,48 +122,6 @@ export default {
 			});
 		}
 
-		const url = new URL(request.url);
-		if (url.pathname === '/nonce') {
-			if (request.method !== 'POST') {
-				return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-					status: 405,
-					headers: corsHeaders,
-				});
-			}
-
-			const { from } = await request.json() as NonceRequestBody;
-			if (!from) {
-				return new Response(JSON.stringify({ error: 'Missing required field: from' }), {
-					status: 400,
-					headers: corsHeaders,
-				});
-			}
-
-			const publicClient = createPublicClient({
-				chain: localhost,
-				transport: http(env.ETH_RPC_URL),
-			});
-
-			try {
-				const nonce = await publicClient.readContract({
-					address: env.ERC2771_FORWARDER_ADDRESS as `0x${string}`,
-					abi: ERC2771ForwarderABI,
-					functionName: 'nonces',
-					args: [from],
-				});
-
-				return new Response(JSON.stringify({ nonce: nonce.toString() }), { headers: corsHeaders });
-			} catch (error: any) {
-				console.error('Error getting nonce:', error);
-				return new Response(JSON.stringify({ error: error.message }), {
-					status: 400,
-					headers: corsHeaders,
-				});
-			}
-		}
-
-		console.log('Request received:', request.method);
-
 		const account = privateKeyToAccount(env.PRIVATE_KEY as `0x${string}`);
 
 		const walletClient = createWalletClient({
@@ -164,12 +129,7 @@ export default {
 			transport: http(env.ETH_RPC_URL),
 		});
 
-		const publicClient = createPublicClient({
-			chain: localhost,
-			transport: http(env.ETH_RPC_URL),
-		});
-
-		const { from, to, data, value, gas, deadline, signature } = await request.json() as RequestBody;
+		const { from, to, data, value, gas, deadline, signature } = json;
 
 		if (!to || !data) {
 			return new Response(JSON.stringify({ error: 'Missing required fields: to and data' }), {
@@ -189,40 +149,6 @@ export default {
 				signature
 			} as const;
 
-			console.log("VERIFYING", {
-				address: env.ERC2771_FORWARDER_ADDRESS,
-				functionName: 'validate',
-				args: [requestData],
-			});
-			const result = await publicClient.readContract({
-				address: env.ERC2771_FORWARDER_ADDRESS as `0x${string}`,
-				abi: ERC2771ForwarderABI,
-				functionName: 'validate',
-				args: [requestData],
-			});
-			console.log("RESULT", result);
-
-			// if (!result[0]) {
-			// 	return new Response(JSON.stringify({ error: 'Not trusted forwarder' }), {
-			// 		status: 400,
-			// 		headers: corsHeaders,
-			// 	});
-			// }
-
-			// if (!result[1]) {
-			// 	return new Response(JSON.stringify({ error: 'Meta tx is not active' }), {
-			// 		status: 400,
-			// 		headers: corsHeaders,
-			// 	});
-			// }
-
-			// if (!result[2]) {
-			// 	return new Response(JSON.stringify({ error: 'Signer does not match' }), {
-			// 		status: 400,
-			// 		headers: corsHeaders,
-			// 	});
-			// }
-
 			// @ts-ignore
 			const transactionHash = await walletClient.sendTransaction({
 				to: env.ERC2771_FORWARDER_ADDRESS as `0x${string}`,
@@ -235,9 +161,25 @@ export default {
 			console.log('Transaction sent:', transactionHash);
 			return new Response(JSON.stringify({ transactionHash }), { headers: corsHeaders });
 		} catch (error: any) {
-			console.error('Error sending transaction:', error);
-			const decodedData = decodeCallData(data);
-			console.log('Decoded call data:', decodedData);
+			// Extract error selector and data from error message
+			const errorMatch = error.shortMessage.match(/(0x[a-fA-F0-9]{8}):\s*([a-fA-F0-9]*)/);
+			if (errorMatch) {
+				const errorSelector = errorMatch[1] as `0x${string}`;
+				
+				// Find error definition in ABIs
+				const allABIs = [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI];
+				const errorDef = allABIs.find(
+					(item) => item.type === 'error' && 
+					`0x${keccak256(toBytes(`${(item as any).name}(${(item as any).inputs?.map((input: any) => input.type).join(',') || ''})`)).slice(2, 10)}` === errorSelector
+				) as any;
+
+				if (errorDef) {
+					console.log('Error:', errorDef.name);
+				} else {
+					console.log('Unknown error selector:', errorSelector);
+				}
+			}
+
 			return new Response(JSON.stringify({ error: error.message }), {
 				status: 400,
 				headers: corsHeaders,
