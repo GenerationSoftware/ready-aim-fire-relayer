@@ -11,7 +11,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { http, encodeFunctionData, createWalletClient, decodeErrorResult, keccak256, toBytes } from 'viem';
+import { http, encodeFunctionData, createWalletClient, decodeErrorResult, decodeFunctionData, keccak256, toBytes } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { localhost } from 'viem/chains';
 import { ReadyAimFireABI } from './abi/ReadyAimFireABI';
@@ -196,12 +196,14 @@ export default {
 					console.log('Unknown error selector:', errorSelector);
 				}
 
-				if (errorDef.name == 'FailedCallWithMessage') {
+				if (errorDef.name == 'FailedCallWithMessage' && errorData !== '') {
 					const decodedError = decodeError(`${errorSelector}${errorData}`);
-					console.log({ decodedError })
-					const nestedError = decodeError(decodedError.args[0] as `0x${string}`);
-					console.log({ nestedError })
-					message = nestedError
+					if (decodedError) {
+						console.log({ decodedError })
+						const nestedError = decodeError(decodedError.args[0] as `0x${string}`);
+						console.log({ nestedError })
+						message = nestedError
+					}
 				}
 			}
 
