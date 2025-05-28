@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "summer-base-b1df",
+	"name": "ready-aim-fire-relayer",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-05-21",
 	"observability": {
