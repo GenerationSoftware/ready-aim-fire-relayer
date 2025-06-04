@@ -29,21 +29,6 @@ interface RequestBody {
 	signature: `0x${string}`;
 }
 
-interface NonceRequestBody {
-	from: `0x${string}`;
-}
-
-interface SigHashRequestBody {
-	from: `0x${string}`;
-	to: `0x${string}`;
-	value: bigint;
-	gas: bigint;
-	deadline: bigint;
-	data: `0x${string}`;
-	signature: `0x${string}`;
-	nonce: bigint;
-}
-
 interface Env {
 	ETH_RPC_URL: string;
 	PRIVATE_KEY: string;
