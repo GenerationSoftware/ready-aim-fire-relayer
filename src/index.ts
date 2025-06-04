@@ -13,11 +13,12 @@
 
 import { http, encodeFunctionData, createWalletClient, decodeErrorResult, decodeFunctionData, keccak256, toBytes } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { localhost } from 'viem/chains';
-import { ReadyAimFireABI } from './abi/ReadyAimFireABI';
 import { BasicDeckABI } from './abi/BasicDeckABI';
-import { ReadyAimFireFactoryABI } from './abi/ReadyAimFireFactoryABI';
+import { BasicDeckLogicABI } from './abi/BasicDeckLogicABI';
 import { ERC2771ForwarderABI } from './abi/ERC2771ForwarderABI';
+import { MinterABI } from './abi/MinterABI';
+import { ReadyAimFireABI } from './abi/ReadyAimFireABI';
+import { ReadyAimFireFactoryABI } from './abi/ReadyAimFireFactoryABI';
 
 interface RequestBody {
 	from: `0x${string}`;
@@ -45,7 +46,14 @@ const corsHeaders = {
 function decodeCallData(data: `0x${string}`) {
 	try {
 		const decoded = decodeFunctionData({
-			abi: [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI, ...BasicDeckABI],
+			abi: [
+				...BasicDeckABI,
+				...BasicDeckLogicABI,
+				...ERC2771ForwarderABI,
+				...MinterABI,
+				...ReadyAimFireABI,
+				...ReadyAimFireFactoryABI
+			],
 			data,
 		});
 		return decoded;
