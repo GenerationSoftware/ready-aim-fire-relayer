@@ -43,17 +43,19 @@ const corsHeaders = {
 	'Access-Control-Allow-Headers': 'Content-Type',
 };
 
+const allABIs = [
+	...BasicDeckABI,
+	...BasicDeckLogicABI,
+	...ERC2771ForwarderABI,
+	...MinterABI,
+	...ReadyAimFireABI,
+	...ReadyAimFireFactoryABI
+]
+
 function decodeCallData(data: `0x${string}`) {
 	try {
 		const decoded = decodeFunctionData({
-			abi: [
-				...BasicDeckABI,
-				...BasicDeckLogicABI,
-				...ERC2771ForwarderABI,
-				...MinterABI,
-				...ReadyAimFireABI,
-				...ReadyAimFireFactoryABI
-			],
+			abi: allABIs,
 			data,
 		});
 		return decoded;
@@ -66,7 +68,7 @@ function decodeCallData(data: `0x${string}`) {
 function decodeError(data: `0x${string}`) {
 	try {
 		const decoded = decodeErrorResult({
-			abi: [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI, ...BasicDeckABI],
+			abi: allABIs,
 			data,
 		});
 		return decoded;
