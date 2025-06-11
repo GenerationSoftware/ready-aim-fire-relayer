@@ -1,5 +1,6 @@
-import { WalletClient, Address, Hash, Account, PublicClient } from 'viem';
-import { ERC2771ForwarderABI } from '../abi/ERC2771ForwarderABI';
+import { WalletClient, Address, Hash, Account, PublicClient, type Abi } from 'viem';
+import ERC2771ForwarderABIJson from '../abi/ERC2771Forwarder.json';
+const ERC2771ForwarderABI = ERC2771ForwarderABIJson as Abi;
 
 export interface ForwardRequestData {
 	from: Address;

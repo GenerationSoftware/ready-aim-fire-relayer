@@ -11,11 +11,14 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { http, encodeFunctionData, createWalletClient, keccak256, toBytes } from 'viem';
+import { http, encodeFunctionData, createWalletClient, keccak256, toBytes, type Abi } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { ERC2771ForwarderABI } from './abi/ERC2771ForwarderABI';
-import { ReadyAimFireABI } from './abi/ReadyAimFireABI';
-import { ReadyAimFireFactoryABI } from './abi/ReadyAimFireFactoryABI';
+import ERC2771ForwarderABIJson from './abi/ERC2771Forwarder.json';
+import ReadyAimFireABIJson from './abi/ReadyAimFire.json';
+import ReadyAimFireFactoryABIJson from './abi/ReadyAimFireFactory.json';
+const ERC2771ForwarderABI = ERC2771ForwarderABIJson as Abi;
+const ReadyAimFireABI = ReadyAimFireABIJson as Abi;
+const ReadyAimFireFactoryABI = ReadyAimFireFactoryABIJson as Abi;
 import { decodeCallData, decodeError } from './utils/decode';
 
 interface RequestBody {
