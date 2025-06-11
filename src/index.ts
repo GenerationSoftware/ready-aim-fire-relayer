@@ -75,7 +75,6 @@ const corsHeaders = {
  */
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		console.log('Request received:', { url: request.url  });
 		if (request.method === 'OPTIONS') {
 			return new Response(null, { headers: corsHeaders });
 		}
