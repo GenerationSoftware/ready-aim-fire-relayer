@@ -166,7 +166,7 @@ export default {
 			}
 
 			return new Response(JSON.stringify({ error: message }), {
-				status: 400,
+				status: error.status,
 				headers: corsHeaders,
 			});
 		}
