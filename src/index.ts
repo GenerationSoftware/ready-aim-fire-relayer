@@ -35,6 +35,7 @@ interface Env {
 	ETH_RPC_URL: string;
 	PRIVATE_KEY: string;
 	ERC2771_FORWARDER_ADDRESS: string;
+	FACTORY_ADDRESS: string;
 }
 
 const corsHeaders = {
@@ -112,24 +113,32 @@ export default {
 		}
 
 		try {
-			const requestData = {
-				from,
-				to,
-				value: 0n,
-				gas,
-				deadline: Number(deadline),
-				data,
-				signature
-			} as const;
+			let recipient;
+			let calldata;
+			if (to.toLowerCase() === env.FACTORY_ADDRESS.toLowerCase()) {
+				recipient = to
+				calldata = data
+			} else {
+				recipient = env.ERC2771_FORWARDER_ADDRESS as `0x${string}`
+				calldata = encodeFunctionData({
+					abi: ERC2771ForwarderABI,
+					functionName: 'execute',
+					args: [{
+						from,
+						to,
+						value: 0n,
+						gas,
+						deadline: Number(deadline),
+						data,
+						signature
+					}],
+				});
+			}
 
 			// @ts-ignore
 			const transactionHash = await walletClient.sendTransaction({
-				to: env.ERC2771_FORWARDER_ADDRESS as `0x${string}`,
-				data: encodeFunctionData({
-					abi: ERC2771ForwarderABI,
-					functionName: 'execute',
-					args: [requestData],
-				}),
+				to: recipient,
+				data: calldata
 			});
 			console.log('Transaction sent:', transactionHash);
 			return new Response(JSON.stringify({ transactionHash }), { headers: corsHeaders });
