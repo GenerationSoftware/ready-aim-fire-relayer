@@ -11,14 +11,12 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { http, encodeFunctionData, createWalletClient, decodeErrorResult, decodeFunctionData, keccak256, toBytes } from 'viem';
+import { http, encodeFunctionData, createWalletClient, keccak256, toBytes } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { BasicDeckABI } from './abi/BasicDeckABI';
-import { BasicDeckLogicABI } from './abi/BasicDeckLogicABI';
 import { ERC2771ForwarderABI } from './abi/ERC2771ForwarderABI';
-import { MinterABI } from './abi/MinterABI';
 import { ReadyAimFireABI } from './abi/ReadyAimFireABI';
 import { ReadyAimFireFactoryABI } from './abi/ReadyAimFireFactoryABI';
+import { decodeCallData, decodeError } from './utils/decode';
 
 interface RequestBody {
 	from: `0x${string}`;
@@ -42,41 +40,6 @@ const corsHeaders = {
 	'Access-Control-Allow-Methods': 'POST, OPTIONS',
 	'Access-Control-Allow-Headers': 'Content-Type',
 };
-
-const allABIs = [
-	...BasicDeckABI,
-	...BasicDeckLogicABI,
-	...ERC2771ForwarderABI,
-	...MinterABI,
-	...ReadyAimFireABI,
-	...ReadyAimFireFactoryABI
-]
-
-function decodeCallData(data: `0x${string}`) {
-	try {
-		const decoded = decodeFunctionData({
-			abi: allABIs,
-			data,
-		});
-		return decoded;
-	} catch (error) {
-		console.error('Error decoding call data:', error);
-		return null;
-	}
-}
-
-function decodeError(data: `0x${string}`) {
-	try {
-		const decoded = decodeErrorResult({
-			abi: allABIs,
-			data,
-		});
-		return decoded;
-	} catch (error) {
-		console.error('Error decoding call data:', error);
-		return null;
-	}
-}
 
 /**
  * Handles incoming requests to forward ERC-2771 transactions.
