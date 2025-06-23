@@ -98,9 +98,18 @@ export default {
 
 		const account = privateKeyToAccount(env.PRIVATE_KEY as `0x${string}`);
 
+		// Extract origin from the incoming request URL
+		const origin = new URL(request.url).origin;
+
 		const walletClient = createWalletClient({
 			account,
-			transport: http(env.ETH_RPC_URL),
+			transport: http(env.ETH_RPC_URL, {
+				fetchOptions: {
+					headers: {
+						'Origin': origin
+					}
+				}
+			}),
 		});
 
 		const { from, to, data, value, gas, deadline, signature } = json;
