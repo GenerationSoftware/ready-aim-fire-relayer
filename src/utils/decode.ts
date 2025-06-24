@@ -1,25 +1,25 @@
 import { decodeErrorResult, decodeFunctionData, type Abi } from 'viem';
-import BasicDeckABIJson from '../abi/BasicDeck.json';
-import BasicDeckLogicABIJson from '../abi/BasicDeckLogic.json';
-import ERC2771ForwarderABIJson from '../abi/ERC2771Forwarder.json';
-import MinterABIJson from '../abi/Minter.json';
-import ReadyAimFireABIJson from '../abi/ReadyAimFire.json';
-import ReadyAimFireFactoryABIJson from '../abi/ReadyAimFireFactory.json';
+import BasicDeckABIJson from '../contracts/abis/BasicDeck.json';
+import BasicDeckLogicABIJson from '../contracts/abis/BasicDeckLogic.json';
+import ERC2771ForwarderABIJson from '../contracts/abis/ERC2771Forwarder.json';
+import MinterABIJson from '../contracts/abis/Minter.json';
+import BattleABIJson from '../contracts/abis/Battle.json';
+import BattleFactoryABIJson from '../contracts/abis/BattleFactory.json';
 
 const BasicDeckABI = BasicDeckABIJson as Abi;
 const BasicDeckLogicABI = BasicDeckLogicABIJson as Abi;
 const ERC2771ForwarderABI = ERC2771ForwarderABIJson as Abi;
 const MinterABI = MinterABIJson as Abi;
-const ReadyAimFireABI = ReadyAimFireABIJson as Abi;
-const ReadyAimFireFactoryABI = ReadyAimFireFactoryABIJson as Abi;
+const BattleABI = BattleABIJson as Abi;
+const BattleFactoryABI = BattleFactoryABIJson as Abi;
 
 const allABIs = [
 	...BasicDeckABI,
 	...BasicDeckLogicABI,
 	...ERC2771ForwarderABI,
 	...MinterABI,
-	...ReadyAimFireABI,
-	...ReadyAimFireFactoryABI
+	...BattleABI,
+	...BattleFactoryABI
 ]
 
 export function decodeCallData(data: `0x${string}`) {

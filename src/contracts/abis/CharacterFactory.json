@@ -6,27 +6,9 @@
         "name": "_trustedForwarder",
         "type": "address",
         "internalType": "address"
-      },
-      {
-        "name": "_basicDeck",
-        "type": "address",
-        "internalType": "contract BasicDeck"
       }
     ],
     "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "basicDeck",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "contract BasicDeck"
-      }
-    ],
-    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -49,35 +31,32 @@
   },
   {
     "type": "function",
-    "name": "mintCollection",
+    "name": "newCharacter",
     "inputs": [
       {
-        "name": "to",
+        "name": "_owner",
         "type": "address",
         "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "playerMinted",
-    "inputs": [
+      },
       {
-        "name": "player",
+        "name": "_operator",
         "type": "address",
         "internalType": "address"
+      },
+      {
+        "name": "_name",
+        "type": "string",
+        "internalType": "string"
       }
     ],
     "outputs": [
       {
-        "name": "minted",
-        "type": "bool",
-        "internalType": "bool"
+        "name": "",
+        "type": "address",
+        "internalType": "contract Character"
       }
     ],
-    "stateMutability": "view"
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -93,14 +72,34 @@
     "stateMutability": "view"
   },
   {
-    "type": "error",
-    "name": "PlayerAlreadyMinted",
+    "type": "event",
+    "name": "CharacterCreated",
     "inputs": [
       {
-        "name": "player",
+        "name": "character",
         "type": "address",
+        "indexed": true,
         "internalType": "address"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "operator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
       }
-    ]
+    ],
+    "anonymous": false
   }
 ]

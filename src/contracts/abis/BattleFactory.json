@@ -1,5 +1,29 @@
 [
   {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_implementation",
+        "type": "address",
+        "internalType": "contract Battle"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "implementation",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract Battle"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
     "type": "function",
     "name": "newGame",
     "inputs": [
@@ -29,28 +53,21 @@
         "internalType": "uint256"
       },
       {
-        "name": "_allowedDecks",
-        "type": "tuple[]",
-        "internalType": "struct DeckConfig[]",
-        "components": [
-          {
-            "name": "deck",
-            "type": "address",
-            "internalType": "contract IDeck"
-          },
-          {
-            "name": "deckLogic",
-            "type": "address",
-            "internalType": "contract IDeckLogic"
-          }
-        ]
+        "name": "_deckConfiguration",
+        "type": "address",
+        "internalType": "contract DeckConfiguration"
+      },
+      {
+        "name": "enforceAdjacency",
+        "type": "bool",
+        "internalType": "bool"
       }
     ],
     "outputs": [
       {
         "name": "",
         "type": "address",
-        "internalType": "contract ReadyAimFire"
+        "internalType": "contract Battle"
       }
     ],
     "stateMutability": "nonpayable"
@@ -96,24 +113,44 @@
         "internalType": "uint256"
       },
       {
-        "name": "_allowedDecks",
-        "type": "tuple[]",
+        "name": "deckConfiguration",
+        "type": "address",
         "indexed": false,
-        "internalType": "struct DeckConfig[]",
-        "components": [
-          {
-            "name": "deck",
-            "type": "address",
-            "internalType": "contract IDeck"
-          },
-          {
-            "name": "deckLogic",
-            "type": "address",
-            "internalType": "contract IDeckLogic"
-          }
-        ]
+        "internalType": "contract DeckConfiguration"
+      },
+      {
+        "name": "playerStatsStorage",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract PlayerStatsStorage"
       }
     ],
     "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "CloneArgumentsTooLong",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "FailedDeployment",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InsufficientBalance",
+    "inputs": [
+      {
+        "name": "balance",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "needed",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
   }
 ]

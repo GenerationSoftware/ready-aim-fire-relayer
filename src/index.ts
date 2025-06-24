@@ -13,12 +13,12 @@
 
 import { http, encodeFunctionData, createWalletClient, keccak256, toBytes, type Abi } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import ERC2771ForwarderABIJson from './abi/ERC2771Forwarder.json';
-import ReadyAimFireABIJson from './abi/ReadyAimFire.json';
-import ReadyAimFireFactoryABIJson from './abi/ReadyAimFireFactory.json';
+import ERC2771ForwarderABIJson from './contracts/abis/ERC2771Forwarder.json';
+import BattleABIJson from './contracts/abis/Battle.json';
+import BattleFactoryABIJson from './contracts/abis/BattleFactory.json';
 const ERC2771ForwarderABI = ERC2771ForwarderABIJson as Abi;
-const ReadyAimFireABI = ReadyAimFireABIJson as Abi;
-const ReadyAimFireFactoryABI = ReadyAimFireFactoryABIJson as Abi;
+const BattleABI = BattleABIJson as Abi;
+const BattleFactoryABI = BattleFactoryABIJson as Abi;
 import { decodeCallData, decodeError } from './utils/decode';
 
 interface RequestBody {
@@ -162,7 +162,7 @@ export default {
 				const errorData = errorMatch[2] as `0x${string}`;
 				console.log({ errorData })
 				// Find error definition in ABIs
-				const allABIs = [...ReadyAimFireABI, ...ReadyAimFireFactoryABI, ...ERC2771ForwarderABI];
+				const allABIs = [...BattleABI, ...BattleFactoryABI, ...ERC2771ForwarderABI];
 				const errorDef = allABIs.find(
 					(item) => item.type === 'error' && 
 					`0x${keccak256(toBytes(`${(item as any).name}(${(item as any).inputs?.map((input: any) => input.type).join(',') || ''})`)).slice(2, 10)}` === errorSelector

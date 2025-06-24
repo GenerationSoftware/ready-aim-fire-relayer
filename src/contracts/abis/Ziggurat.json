@@ -1,0 +1,899 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_trustedForwarder",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_operator",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_rngSeed",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_readyAimFireFactory",
+        "type": "address",
+        "internalType": "contract BattleFactory"
+      },
+      {
+        "name": "_deckConfiguration",
+        "type": "address",
+        "internalType": "contract DeckConfiguration"
+      },
+      {
+        "name": "_monsterRegistry",
+        "type": "address",
+        "internalType": "contract MonsterRegistry"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "MAX_DOOR_COUNT",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "TURN_DURATION",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "childRoomHashes",
+    "inputs": [
+      {
+        "name": "roomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "doorIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "childRoomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "chooseDoor",
+    "inputs": [
+      {
+        "name": "_partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_chosenDoorIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "close",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "createAndStartParty",
+    "inputs": [
+      {
+        "name": "character",
+        "type": "address",
+        "internalType": "contract Character"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "createParty",
+    "inputs": [
+      {
+        "name": "character",
+        "type": "address",
+        "internalType": "contract Character"
+      },
+      {
+        "name": "_inviter",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_isPublic",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deckConfiguration",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract DeckConfiguration"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "enterDoor",
+    "inputs": [
+      {
+        "name": "_partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "escape",
+    "inputs": [
+      {
+        "name": "_partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getNumberOfDoors",
+    "inputs": [
+      {
+        "name": "_roomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRoomType",
+    "inputs": [
+      {
+        "name": "_roomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum RoomType"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isClosed",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isRoomCompleted",
+    "inputs": [
+      {
+        "name": "_partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isTrustedForwarder",
+    "inputs": [
+      {
+        "name": "forwarder",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "joinParty",
+    "inputs": [
+      {
+        "name": "character",
+        "type": "address",
+        "internalType": "contract Character"
+      },
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "joinPartyWithInvite",
+    "inputs": [
+      {
+        "name": "character",
+        "type": "address",
+        "internalType": "contract Character"
+      },
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "signature",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "memberToPartyId",
+    "inputs": [
+      {
+        "name": "character",
+        "type": "address",
+        "internalType": "contract Character"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "monsterRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract MonsterRegistry"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "operator",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "parties",
+    "inputs": [
+      {
+        "name": "_partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Party",
+        "components": [
+          {
+            "name": "isPublic",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "isStarted",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "isEnded",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "inviter",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "leader",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "roomHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "isNextDoorChosen",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "nextDoorIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "partyBattles",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "roomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "readyAimFire",
+        "type": "address",
+        "internalType": "contract Battle"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "partyCount",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "partyIndexToRelativeLocation",
+    "inputs": [
+      {
+        "name": "i",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "int256",
+        "internalType": "int256"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "partyMembers",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "members",
+        "type": "address",
+        "internalType": "contract Character"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "readyAimFireFactory",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract BattleFactory"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "revealDoor",
+    "inputs": [
+      {
+        "name": "_roomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_doorIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "signature",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "rngSeed",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "rooms",
+    "inputs": [
+      {
+        "name": "_roomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Room",
+        "components": [
+          {
+            "name": "depth",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "rootRoomHash",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "startParty",
+    "inputs": [
+      {
+        "name": "_partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "trustedForwarder",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "NextRoomChosenEvent",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "doorIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PartyCreatedEvent",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "leader",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "isPublic",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "inviter",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PartyEndedEvent",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PartyMemberJoinedEvent",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "character",
+        "type": "address",
+        "indexed": true,
+        "internalType": "contract Character"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PartyStartedEvent",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoomEnteredEvent",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "roomHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "roomType",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum RoomType"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoomRevealedEvent",
+    "inputs": [
+      {
+        "name": "roomHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "doorIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "childRoomHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ZigguratClosedEvent",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "AlreadyJoinedError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ECDSAInvalidSignature",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ECDSAInvalidSignatureLength",
+    "inputs": [
+      {
+        "name": "length",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ECDSAInvalidSignatureS",
+    "inputs": [
+      {
+        "name": "s",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidDoorIndexError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidSignatureError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NextDoorChosenError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NextDoorNotChosenError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoMonstersError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OnlyCharacterOwnerError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OnlyOperatorError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OnlyPartyOwnerError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PartyDoesNotExistError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PartyHasEndedError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PartyHasStartedError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PartyIsPublicError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "RoomNotCompleteError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "RoomNotRevealedError",
+    "inputs": [
+      {
+        "name": "roomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "doorIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ZigguratClosedError",
+    "inputs": []
+  }
+]

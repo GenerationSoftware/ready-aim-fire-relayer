@@ -1,50 +1,7 @@
 [
   {
     "type": "constructor",
-    "inputs": [
-      {
-        "name": "_trustedForwarder",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_owner",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_operator",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_joinDeadlineAt",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_turnDuration",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_allowedDecks",
-        "type": "tuple[]",
-        "internalType": "struct DeckConfig[]",
-        "components": [
-          {
-            "name": "deck",
-            "type": "address",
-            "internalType": "contract IDeck"
-          },
-          {
-            "name": "deckLogic",
-            "type": "address",
-            "internalType": "contract IDeckLogic"
-          }
-        ]
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable"
   },
   {
@@ -122,7 +79,7 @@
         "internalType": "uint256"
       },
       {
-        "name": "_card",
+        "name": "_activeCardIndex",
         "type": "uint256",
         "internalType": "uint256"
       },
@@ -137,47 +94,62 @@
   },
   {
     "type": "function",
-    "name": "addPlayerStat",
-    "inputs": [
-      {
-        "name": "_playerId",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_stat",
-        "type": "uint8",
-        "internalType": "enum PlayerStatType"
-      },
-      {
-        "name": "_value",
-        "type": "uint8",
-        "internalType": "uint8"
-      }
-    ],
+    "name": "construct",
+    "inputs": [],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "allowedDecks",
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
+    "name": "constructorArgs",
+    "inputs": [],
     "outputs": [
       {
-        "name": "deck",
-        "type": "address",
-        "internalType": "contract IDeck"
-      },
-      {
-        "name": "deckLogic",
-        "type": "address",
-        "internalType": "contract IDeckLogic"
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct BattleConstructorArgs",
+        "components": [
+          {
+            "name": "trustedForwarder",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "owner",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "operator",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "joinDeadlineAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "turnDuration",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "deckConfiguration",
+            "type": "address",
+            "internalType": "contract DeckConfiguration"
+          },
+          {
+            "name": "playerStatsStorage",
+            "type": "address",
+            "internalType": "contract PlayerStatsStorage"
+          },
+          {
+            "name": "enforceAdjacency",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
       }
     ],
     "stateMutability": "view"
@@ -202,19 +174,6 @@
         "internalType": "uint256"
       }
     ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "currentGameClock",
-    "inputs": [],
     "outputs": [
       {
         "name": "",
@@ -281,42 +240,13 @@
   },
   {
     "type": "function",
-    "name": "decPlayerStat",
-    "inputs": [
-      {
-        "name": "_playerId",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_stat",
-        "type": "uint8",
-        "internalType": "enum PlayerStatType"
-      },
-      {
-        "name": "_value",
-        "type": "uint8",
-        "internalType": "uint8"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "deckForLogic",
-    "inputs": [
-      {
-        "name": "logic",
-        "type": "address",
-        "internalType": "contract IDeckLogic"
-      }
-    ],
+    "name": "deckConfiguration",
+    "inputs": [],
     "outputs": [
       {
-        "name": "deck",
+        "name": "",
         "type": "address",
-        "internalType": "contract IDeck"
+        "internalType": "contract DeckConfiguration"
       }
     ],
     "stateMutability": "view"
@@ -324,45 +254,11 @@
   {
     "type": "function",
     "name": "endTurn",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "forceJoin",
     "inputs": [
       {
-        "name": "_player",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_locationX",
-        "type": "uint8",
-        "internalType": "enum TeamColumn"
-      },
-      {
-        "name": "_locationY",
+        "name": "_playerId",
         "type": "uint256",
         "internalType": "uint256"
-      },
-      {
-        "name": "_cards",
-        "type": "tuple[]",
-        "internalType": "struct Card[]",
-        "components": [
-          {
-            "name": "deck",
-            "type": "address",
-            "internalType": "contract IDeck"
-          },
-          {
-            "name": "tokenId",
-            "type": "uint256",
-            "internalType": "uint256"
-          }
-        ]
       }
     ],
     "outputs": [],
@@ -370,13 +266,13 @@
   },
   {
     "type": "function",
-    "name": "gameClockOffset",
+    "name": "enforceAdjacency",
     "inputs": [],
     "outputs": [
       {
         "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
+        "type": "bool",
+        "internalType": "bool"
       }
     ],
     "stateMutability": "view"
@@ -411,9 +307,14 @@
         "internalType": "struct PlayerStats",
         "components": [
           {
+            "name": "teamA",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
             "name": "turn",
-            "type": "uint16",
-            "internalType": "uint16"
+            "type": "uint8",
+            "internalType": "uint8"
           },
           {
             "name": "stats",
@@ -427,22 +328,26 @@
   },
   {
     "type": "function",
-    "name": "getPlayerStatsArray",
+    "name": "incPlayerStat",
     "inputs": [
       {
         "name": "_playerId",
         "type": "uint256",
         "internalType": "uint256"
-      }
-    ],
-    "outputs": [
+      },
       {
-        "name": "",
-        "type": "uint8[30]",
-        "internalType": "uint8[30]"
+        "name": "_stat",
+        "type": "uint8",
+        "internalType": "enum PlayerStatType"
+      },
+      {
+        "name": "_amount",
+        "type": "uint8",
+        "internalType": "uint8"
       }
     ],
-    "stateMutability": "view"
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -494,12 +399,12 @@
   },
   {
     "type": "function",
-    "name": "isDeckEnabled",
+    "name": "isDelegate",
     "inputs": [
       {
-        "name": "_deck",
+        "name": "_delegate",
         "type": "address",
-        "internalType": "contract IDeck"
+        "internalType": "address"
       }
     ],
     "outputs": [
@@ -509,31 +414,31 @@
         "internalType": "bool"
       }
     ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "isDeckLogicEnabled",
-    "inputs": [
-      {
-        "name": "_logic",
-        "type": "address",
-        "internalType": "contract IDeckLogic"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool",
-        "internalType": "bool"
-      }
-    ],
-    "stateMutability": "view"
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
     "name": "isGameStarted",
     "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isOwnerOrOperator",
+    "inputs": [
+      {
+        "name": "_addy",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
     "outputs": [
       {
         "name": "",
@@ -664,6 +569,11 @@
     "name": "join",
     "inputs": [
       {
+        "name": "_playerId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
         "name": "_locationX",
         "type": "uint8",
         "internalType": "enum TeamColumn"
@@ -674,21 +584,9 @@
         "internalType": "uint256"
       },
       {
-        "name": "_cards",
-        "type": "tuple[]",
-        "internalType": "struct Card[]",
-        "components": [
-          {
-            "name": "deck",
-            "type": "address",
-            "internalType": "contract IDeck"
-          },
-          {
-            "name": "tokenId",
-            "type": "uint256",
-            "internalType": "uint256"
-          }
-        ]
+        "name": "_character",
+        "type": "address",
+        "internalType": "contract Character"
       }
     ],
     "outputs": [
@@ -739,28 +637,33 @@
   },
   {
     "type": "function",
-    "name": "logicForDeck",
+    "name": "nextTurn",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "onTransferOperator",
     "inputs": [
       {
-        "name": "deck",
+        "name": "previousOperator",
         "type": "address",
-        "internalType": "contract IDeck"
+        "internalType": "address"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
       }
     ],
     "outputs": [
       {
-        "name": "logic",
-        "type": "address",
-        "internalType": "contract IDeckLogic"
+        "name": "",
+        "type": "bytes4",
+        "internalType": "bytes4"
       }
     ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "nextTurn",
-    "inputs": [],
-    "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
@@ -791,26 +694,7 @@
   },
   {
     "type": "function",
-    "name": "ownerToPlayerId",
-    "inputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "playerCards",
+    "name": "playerCharacter",
     "inputs": [
       {
         "name": "_playerId",
@@ -821,20 +705,8 @@
     "outputs": [
       {
         "name": "",
-        "type": "tuple[4]",
-        "internalType": "struct Card[4]",
-        "components": [
-          {
-            "name": "deck",
-            "type": "address",
-            "internalType": "contract IDeck"
-          },
-          {
-            "name": "tokenId",
-            "type": "uint256",
-            "internalType": "uint256"
-          }
-        ]
+        "type": "address",
+        "internalType": "contract Character"
       }
     ],
     "stateMutability": "view"
@@ -884,31 +756,13 @@
   },
   {
     "type": "function",
-    "name": "players",
-    "inputs": [
-      {
-        "name": "_playerId",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
+    "name": "playerStatsStorage",
+    "inputs": [],
     "outputs": [
       {
         "name": "",
-        "type": "tuple",
-        "internalType": "struct Player",
-        "components": [
-          {
-            "name": "teamA",
-            "type": "bool",
-            "internalType": "bool"
-          },
-          {
-            "name": "owner",
-            "type": "address",
-            "internalType": "address"
-          }
-        ]
+        "type": "address",
+        "internalType": "contract PlayerStatsStorage"
       }
     ],
     "stateMutability": "view"
@@ -997,6 +851,19 @@
       }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "transferOperator",
+    "inputs": [
+      {
+        "name": "newOperator",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -1139,6 +1006,25 @@
   },
   {
     "type": "event",
+    "name": "OperatorTransferred",
+    "inputs": [
+      {
+        "name": "previousOperator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOperator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "OwnershipTransferred",
     "inputs": [
       {
@@ -1186,12 +1072,6 @@
     "name": "PlayerJoinedEvent",
     "inputs": [
       {
-        "name": "owner",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
         "name": "playerId",
         "type": "uint256",
         "indexed": true,
@@ -1210,60 +1090,17 @@
         "internalType": "uint256"
       },
       {
-        "name": "cards",
-        "type": "tuple[]",
-        "indexed": false,
-        "internalType": "struct Card[]",
-        "components": [
-          {
-            "name": "deck",
-            "type": "address",
-            "internalType": "contract IDeck"
-          },
-          {
-            "name": "tokenId",
-            "type": "uint256",
-            "internalType": "uint256"
-          }
-        ]
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "PlayerStatUpdatedEvent",
-    "inputs": [
-      {
-        "name": "playerId",
-        "type": "uint256",
+        "name": "character",
+        "type": "address",
         "indexed": true,
-        "internalType": "uint256"
-      },
-      {
-        "name": "stats",
-        "type": "tuple",
-        "indexed": false,
-        "internalType": "struct PlayerStats",
-        "components": [
-          {
-            "name": "turn",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "stats",
-            "type": "bytes30",
-            "internalType": "bytes30"
-          }
-        ]
+        "internalType": "contract Character"
       }
     ],
     "anonymous": false
   },
   {
     "type": "error",
-    "name": "AlreadyJoinedError",
+    "name": "AlreadyConstructed",
     "inputs": []
   },
   {
@@ -1298,6 +1135,11 @@
   },
   {
     "type": "error",
+    "name": "InvalidOperator",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "JoinDeadlineHasPassedError",
     "inputs": []
   },
@@ -1328,17 +1170,7 @@
   },
   {
     "type": "error",
-    "name": "NotOperatorError",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "NotPlayerOwnerError",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "NotTokenOwner",
+    "name": "NotPlayerOwnerOrOperatorError",
     "inputs": []
   },
   {
@@ -1349,6 +1181,16 @@
   {
     "type": "error",
     "name": "OnlyEnabledDecks",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OnlyOperatorError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OnlyOwnerOrOperatorError",
     "inputs": []
   },
   {
@@ -1376,6 +1218,11 @@
   {
     "type": "error",
     "name": "PlayerHasAlreadyEndedTurnError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PlayerIdAlreadyJoined",
     "inputs": []
   },
   {

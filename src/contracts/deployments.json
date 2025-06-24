@@ -1,0 +1,62 @@
+[
+  {
+    "contractName": "Battle",
+    "contractAddress": "0x3db2b0a147ce2998e9b5c852dd7aaa4b04cb1895",
+    "transactionHash": "0xb5f7852603087f675d4f8bef4755a7bab2fe504a65a34baaa9012f2a3d470a63",
+    "blockNumber": "0x19424a"
+  },
+  {
+    "contractName": "BasicDeck",
+    "contractAddress": "0x4d6ebe7415557f9762a8e3dfd8cb8d4bbce5f3b2",
+    "transactionHash": "0xa2e7c505f8535c61ded65379d14595a058dcd35a4f1e6db64af31114197b82d5",
+    "blockNumber": "0x19424b"
+  },
+  {
+    "contractName": "BasicDeckLogic",
+    "contractAddress": "0x0a06d8e02209aa8d93d73160f983b0791a099486",
+    "transactionHash": "0x805165fbf6921904b73f82d4e1b0115e286a7273e1c3df0b2c6be2fd2322ea62",
+    "blockNumber": "0x19424b"
+  },
+  {
+    "contractName": "DeckConfiguration",
+    "contractAddress": "0x1304dd2fb5e758a15ac09e0506fb1d55f2a32762",
+    "transactionHash": "0x83dc5f2902dfd6b0ed1ea59e7dbda7c85399c245968f5797e6851b2061d47262",
+    "blockNumber": "0x19424b"
+  },
+  {
+    "contractName": "Minter",
+    "contractAddress": "0xc35026269d033aaf4a8e06678d31cfce2c814c5e",
+    "transactionHash": "0x2a4b21c6fa10ea11d0494ccaa1042aa442c58efde4130c4fff9940dcbedf4571",
+    "blockNumber": "0x19424b"
+  },
+  {
+    "contractName": "BattleFactory",
+    "contractAddress": "0x648077435d1084686f1d703a014fa283d7f437d5",
+    "transactionHash": "0xf904da399e70a1641fb20016dcf89abdce4235abf3b8022243bb9e66b1d2cf9b",
+    "blockNumber": "0x19424b"
+  },
+  {
+    "contractName": "MonsterRegistry",
+    "contractAddress": "0xcab1dde4c5f73d19ab3eee68d1e4d517abe8f6ae",
+    "transactionHash": "0xbd427941fdb49c305ccbd7fbfd0e990e84b261db90d5da6ca65204b4342ee1e7",
+    "blockNumber": "0x19424c"
+  },
+  {
+    "contractName": "CharacterFactory",
+    "contractAddress": "0x68d0d3b171a1fec58adb605f8c55bbab98351f7c",
+    "transactionHash": "0x7e94cd963438c0d6cf57be1f73b3b02f3d6ad7df9b8ef5ebdf26220cc8ac5b37",
+    "blockNumber": "0x19424c"
+  },
+  {
+    "contractName": "ZigguratSingleton",
+    "contractAddress": "0x691907f5928216ed491a3dbf976a273cb497966f",
+    "transactionHash": "0xe12b991ebd893478ef5e8d2a284b86d4f0da7937d96997aa5d2a9810668ed23d",
+    "blockNumber": "0x19424c"
+  },
+  {
+    "contractName": "Ziggurat",
+    "contractAddress": "0xbbcfa1baf39bba0bde0b9d053296f22e245ed26e",
+    "transactionHash": "0x3ca1ae5d285bc37f9e541cc4015d11912fd81ad04fca050df93d2e05cc9bb60a",
+    "blockNumber": "0x19424c"
+  }
+]
