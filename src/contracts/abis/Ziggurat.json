@@ -893,6 +893,11 @@
   },
   {
     "type": "error",
+    "name": "SignatureRecoveryError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "ZigguratClosedError",
     "inputs": []
   }

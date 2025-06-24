@@ -11,15 +11,12 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { http, encodeFunctionData, createWalletClient, keccak256, toBytes, type Abi } from 'viem';
+import { http, encodeFunctionData, createWalletClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import ERC2771ForwarderABIJson from './contracts/abis/ERC2771Forwarder.json';
-import BattleABIJson from './contracts/abis/Battle.json';
-import BattleFactoryABIJson from './contracts/abis/BattleFactory.json';
-const ERC2771ForwarderABI = ERC2771ForwarderABIJson as Abi;
-const BattleABI = BattleABIJson as Abi;
-const BattleFactoryABI = BattleFactoryABIJson as Abi;
-import { decodeCallData, decodeError } from './utils/decode';
+import { ERC2771ForwarderABI, allABIs } from './allAbis';
+import { decodeCallData } from './utils/decode';
+import { ErrorHandler } from './utils/errorHandler';
+import deployments from './contracts/deployments.json';
 
 interface RequestBody {
 	from: `0x${string}`;
@@ -35,7 +32,6 @@ interface Env {
 	ETH_RPC_URL: string;
 	PRIVATE_KEY: string;
 	ERC2771_FORWARDER_ADDRESS: string;
-	FACTORY_ADDRESS: string;
 }
 
 const corsHeaders = {
@@ -121,10 +117,20 @@ export default {
 			});
 		}
 
+		// Get BattleFactory address from deployments.json
+		const battleFactoryDeployment = deployments.find(d => d.contractName === 'BattleFactory');
+		if (!battleFactoryDeployment) {
+			return new Response(JSON.stringify({ error: 'BattleFactory deployment not found' }), {
+				status: 500,
+				headers: corsHeaders,
+			});
+		}
+		const battleFactoryAddress = battleFactoryDeployment.contractAddress;
+
 		try {
 			let recipient;
 			let calldata;
-			if (to.toLowerCase() === env.FACTORY_ADDRESS.toLowerCase()) {
+			if (to.toLowerCase() === battleFactoryAddress.toLowerCase()) {
 				recipient = to
 				calldata = data
 			} else {
@@ -151,42 +157,32 @@ export default {
 			});
 			console.log('Transaction sent:', transactionHash);
 			return new Response(JSON.stringify({ transactionHash }), { headers: corsHeaders });
-		} catch (error: any) {
-			let message = error.message;
-			console.log('Error message:', error.message);
-			console.log('Error short message:', error.shortMessage);
-			// Extract error selector and data from error message
-			const errorMatch = error.shortMessage.match(/(0x[a-fA-F0-9]{8}):\s*([a-fA-F0-9]*)/);
-			if (errorMatch) {
-				const errorSelector = errorMatch[1] as `0x${string}`;
-				const errorData = errorMatch[2] as `0x${string}`;
-				console.log({ errorData })
-				// Find error definition in ABIs
-				const allABIs = [...BattleABI, ...BattleFactoryABI, ...ERC2771ForwarderABI];
-				const errorDef = allABIs.find(
-					(item) => item.type === 'error' && 
-					`0x${keccak256(toBytes(`${(item as any).name}(${(item as any).inputs?.map((input: any) => input.type).join(',') || ''})`)).slice(2, 10)}` === errorSelector
-				) as any;
-
-				if (errorDef) {
-					console.log('Error:', errorDef);
-				} else {
-					console.log('Unknown error selector:', errorSelector);
-				}
-
-				if (errorDef.name == 'FailedCallWithMessage' && errorData !== '') {
-					const decodedError = decodeError(`${errorSelector}${errorData}`);
-					if (decodedError) {
-						console.log({ decodedError })
-						const nestedError = decodeError(decodedError.args[0] as `0x${string}`);
-						console.log({ nestedError })
-						message = nestedError
-					}
+		} catch (error) {
+			// Initialize error handler with all ABIs
+			const errorHandler = new ErrorHandler(allABIs);
+			const unifiedError = errorHandler.handleError(error);
+			
+			console.log('Unified error:', JSON.stringify(unifiedError, null, 2));
+			
+			// Determine appropriate HTTP status code
+			let status = 500;
+			if (unifiedError.type === 'validation') {
+				status = 400;
+			} else if (unifiedError.type === 'network') {
+				status = 503;
+			} else if (unifiedError.type === 'rpc' && unifiedError.code) {
+				// Map common RPC error codes to HTTP status codes
+				if (unifiedError.code === -32602 || unifiedError.code === -32600) {
+					status = 400; // Invalid params or request
 				}
 			}
-
-			return new Response(JSON.stringify({ error: message }), {
-				status: error.status,
+			
+			return new Response(JSON.stringify({ 
+				error: unifiedError.message,
+				errorType: unifiedError.type,
+				errorDetails: unifiedError.details
+			}), {
+				status,
 				headers: corsHeaders,
 			});
 		}

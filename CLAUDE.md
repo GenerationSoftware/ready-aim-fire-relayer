@@ -54,7 +54,6 @@ Required environment variables for deployment:
 - `ETH_RPC_URL`: Ethereum RPC endpoint URL
 - `PRIVATE_KEY`: Private key for signing transactions
 - `ERC2771_FORWARDER_ADDRESS`: Address of the ERC2771Forwarder contract
-- `FACTORY_ADDRESS`: Address of the BattleFactory contract
 
 ## Request Format
 
