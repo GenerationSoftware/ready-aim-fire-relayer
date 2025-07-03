@@ -152,6 +152,30 @@
   },
   {
     "type": "function",
+    "name": "deckToCardIds",
+    "inputs": [
+      {
+        "name": "deck",
+        "type": "address",
+        "internalType": "contract IDeck"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "cardId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "isOwnerOrOperator",
     "inputs": [
       {
@@ -306,13 +330,13 @@
     "name": "transferOwnership",
     "inputs": [
       {
-        "name": "newOwner",
+        "name": "",
         "type": "address",
         "internalType": "address"
       }
     ],
     "outputs": [],
-    "stateMutability": "nonpayable"
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -326,6 +350,31 @@
       }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "ActivatedCard",
+    "inputs": [
+      {
+        "name": "cardId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "deck",
+        "type": "address",
+        "indexed": true,
+        "internalType": "contract IDeck"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
   },
   {
     "type": "event",
@@ -367,7 +416,17 @@
   },
   {
     "type": "error",
+    "name": "CardAlreadyActive",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "InvalidOperator",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotCardOwner",
     "inputs": []
   },
   {

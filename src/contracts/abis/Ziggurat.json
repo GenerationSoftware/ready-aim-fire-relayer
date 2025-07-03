@@ -63,6 +63,19 @@
   },
   {
     "type": "function",
+    "name": "cancelParty",
+    "inputs": [
+      {
+        "name": "_partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "childRoomHashes",
     "inputs": [
       {
@@ -394,16 +407,6 @@
             "internalType": "bool"
           },
           {
-            "name": "isStarted",
-            "type": "bool",
-            "internalType": "bool"
-          },
-          {
-            "name": "isEnded",
-            "type": "bool",
-            "internalType": "bool"
-          },
-          {
             "name": "inviter",
             "type": "address",
             "internalType": "address"
@@ -414,17 +417,17 @@
             "internalType": "address"
           },
           {
+            "name": "state",
+            "type": "uint8",
+            "internalType": "enum PartyState"
+          },
+          {
             "name": "roomHash",
             "type": "bytes32",
             "internalType": "bytes32"
           },
           {
-            "name": "isNextDoorChosen",
-            "type": "bool",
-            "internalType": "bool"
-          },
-          {
-            "name": "nextDoorIndex",
+            "name": "chosenDoor",
             "type": "uint256",
             "internalType": "uint256"
           }
@@ -817,17 +820,12 @@
   },
   {
     "type": "error",
+    "name": "InvalidPartyStateError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "InvalidSignatureError",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "NextDoorChosenError",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "NextDoorNotChosenError",
     "inputs": []
   },
   {
@@ -853,16 +851,6 @@
   {
     "type": "error",
     "name": "PartyDoesNotExistError",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "PartyHasEndedError",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "PartyHasStartedError",
     "inputs": []
   },
   {
