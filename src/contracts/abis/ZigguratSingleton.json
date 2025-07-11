@@ -27,6 +27,25 @@
   },
   {
     "type": "function",
+    "name": "_pastZiggurats",
+    "inputs": [
+      {
+        "name": "ziggurat",
+        "type": "address",
+        "internalType": "contract Ziggurat"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "wasSet",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "isOwnerOrOperator",
     "inputs": [
       {
@@ -52,6 +71,25 @@
         "name": "forwarder",
         "type": "address",
         "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isZiggurat",
+    "inputs": [
+      {
+        "name": "ziggurat",
+        "type": "address",
+        "internalType": "contract Ziggurat"
       }
     ],
     "outputs": [
@@ -104,8 +142,33 @@
   },
   {
     "type": "function",
+    "name": "renounceOperatorship",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "renounceOwnership",
     "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "safeTransferOperator",
+    "inputs": [
+      {
+        "name": "newOperator",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
@@ -298,6 +361,11 @@
   {
     "type": "error",
     "name": "InvalidOperator",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OnlyOperatorError",
     "inputs": []
   },
   {

@@ -68,25 +68,6 @@
   },
   {
     "type": "function",
-    "name": "playerMinted",
-    "inputs": [
-      {
-        "name": "player",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "minted",
-        "type": "bool",
-        "internalType": "bool"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "trustedForwarder",
     "inputs": [],
     "outputs": [
@@ -97,16 +78,5 @@
       }
     ],
     "stateMutability": "view"
-  },
-  {
-    "type": "error",
-    "name": "PlayerAlreadyMinted",
-    "inputs": [
-      {
-        "name": "player",
-        "type": "address",
-        "internalType": "address"
-      }
-    ]
   }
 ]

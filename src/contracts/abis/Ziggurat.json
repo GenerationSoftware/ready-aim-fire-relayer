@@ -18,7 +18,7 @@
         "internalType": "bytes32"
       },
       {
-        "name": "_readyAimFireFactory",
+        "name": "_battleFactory",
         "type": "address",
         "internalType": "contract BattleFactory"
       },
@@ -37,7 +37,33 @@
   },
   {
     "type": "function",
+    "name": "MAX_DOORS",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "MAX_DOOR_COUNT",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MIN_DEPTH_FOR_EMPTY",
     "inputs": [],
     "outputs": [
       {
@@ -57,6 +83,32 @@
         "name": "",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "battleFactory",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract BattleFactory"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "battleRewards",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract ZigguratBattleRewards"
       }
     ],
     "stateMutability": "view"
@@ -212,6 +264,25 @@
   },
   {
     "type": "function",
+    "name": "getMonsterIndex",
+    "inputs": [
+      {
+        "name": "_roomHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "getNumberOfDoors",
     "inputs": [
       {
@@ -252,6 +323,44 @@
     "type": "function",
     "name": "isClosed",
     "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isOperatorDelegate",
+    "inputs": [
+      {
+        "name": "_delegate",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isOwnerOrOperator",
+    "inputs": [
+      {
+        "name": "_addy",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
     "outputs": [
       {
         "name": "",
@@ -374,7 +483,44 @@
   },
   {
     "type": "function",
+    "name": "onTransferOperator",
+    "inputs": [
+      {
+        "name": "previousOperator",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes4",
+        "internalType": "bytes4"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "operator",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
     "inputs": [],
     "outputs": [
       {
@@ -453,7 +599,7 @@
     ],
     "outputs": [
       {
-        "name": "readyAimFire",
+        "name": "battle",
         "type": "address",
         "internalType": "contract Battle"
       }
@@ -518,16 +664,17 @@
   },
   {
     "type": "function",
-    "name": "readyAimFireFactory",
+    "name": "renounceOperatorship",
     "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "contract BattleFactory"
-      }
-    ],
-    "stateMutability": "view"
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -606,12 +753,82 @@
   },
   {
     "type": "function",
+    "name": "safeTransferOperator",
+    "inputs": [
+      {
+        "name": "newOperator",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setBattleRewards",
+    "inputs": [
+      {
+        "name": "_battleRewards",
+        "type": "address",
+        "internalType": "contract ZigguratBattleRewards"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "startBattle",
+    "inputs": [
+      {
+        "name": "_partyId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "startParty",
     "inputs": [
       {
         "name": "_partyId",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "transferOperator",
+    "inputs": [
+      {
+        "name": "newOperator",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address",
+        "internalType": "address"
       }
     ],
     "outputs": [],
@@ -632,6 +849,38 @@
   },
   {
     "type": "event",
+    "name": "BattleRewardsSetEvent",
+    "inputs": [
+      {
+        "name": "battleRewards",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "BattleStartedEvent",
+    "inputs": [
+      {
+        "name": "partyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "roomHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "NextRoomChosenEvent",
     "inputs": [
       {
@@ -642,6 +891,57 @@
       },
       {
         "name": "doorIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OperatorTransferred",
+    "inputs": [
+      {
+        "name": "previousOperator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOperator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
+    "inputs": [
+      {
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PartyCancelledEvent",
+    "inputs": [
+      {
+        "name": "partyId",
         "type": "uint256",
         "indexed": true,
         "internalType": "uint256"
@@ -783,7 +1083,17 @@
   },
   {
     "type": "error",
+    "name": "AlreadyInPartyError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "AlreadyJoinedError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "CharacterNotInPartyError",
     "inputs": []
   },
   {
@@ -820,6 +1130,11 @@
   },
   {
     "type": "error",
+    "name": "InvalidOperator",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "InvalidPartyStateError",
     "inputs": []
   },
@@ -835,6 +1150,11 @@
   },
   {
     "type": "error",
+    "name": "NotBattleRoomError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "OnlyCharacterOwnerError",
     "inputs": []
   },
@@ -845,8 +1165,35 @@
   },
   {
     "type": "error",
+    "name": "OnlyOwnerOrOperatorError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "OnlyPartyOwnerError",
     "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OwnableInvalidOwner",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "OwnableUnauthorizedAccount",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
   },
   {
     "type": "error",
@@ -856,6 +1203,11 @@
   {
     "type": "error",
     "name": "PartyIsPublicError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "RoomCompletedError",
     "inputs": []
   },
   {

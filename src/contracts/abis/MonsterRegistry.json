@@ -37,13 +37,6 @@
   },
   {
     "type": "function",
-    "name": "clear",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
     "name": "monsterCount",
     "inputs": [],
     "outputs": [
@@ -125,6 +118,32 @@
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "MonsterAdded",
+    "inputs": [
+      {
+        "name": "character",
+        "type": "address",
+        "indexed": true,
+        "internalType": "contract Character"
+      },
+      {
+        "name": "stats",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct MonsterStats",
+        "components": [
+          {
+            "name": "health",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
   },
   {
     "type": "event",
