@@ -26,8 +26,8 @@
         "components": [
           {
             "name": "health",
-            "type": "uint256",
-            "internalType": "uint256"
+            "type": "uint8",
+            "internalType": "uint8"
           }
         ]
       }
@@ -92,16 +92,23 @@
     "name": "stats",
     "inputs": [
       {
-        "name": "character",
+        "name": "_character",
         "type": "address",
         "internalType": "contract Character"
       }
     ],
     "outputs": [
       {
-        "name": "health",
-        "type": "uint256",
-        "internalType": "uint256"
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct MonsterStats",
+        "components": [
+          {
+            "name": "health",
+            "type": "uint8",
+            "internalType": "uint8"
+          }
+        ]
       }
     ],
     "stateMutability": "view"
@@ -137,8 +144,8 @@
         "components": [
           {
             "name": "health",
-            "type": "uint256",
-            "internalType": "uint256"
+            "type": "uint8",
+            "internalType": "uint8"
           }
         ]
       }

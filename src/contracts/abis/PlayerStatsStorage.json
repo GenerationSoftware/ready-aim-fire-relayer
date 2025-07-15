@@ -189,6 +189,29 @@
   },
   {
     "type": "function",
+    "name": "setStat",
+    "inputs": [
+      {
+        "name": "_playerId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_stat",
+        "type": "uint8",
+        "internalType": "enum PlayerStatType"
+      },
+      {
+        "name": "_value",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "transferOperator",
     "inputs": [
       {
@@ -312,12 +335,12 @@
   },
   {
     "type": "error",
-    "name": "OnlyOperatorOrDelegateError",
+    "name": "OnlyOwnerOrOperatorError",
     "inputs": []
   },
   {
     "type": "error",
-    "name": "OnlyOwnerOrOperatorError",
+    "name": "OnlyOwnerOrOperatorOrDelegateError",
     "inputs": []
   },
   {

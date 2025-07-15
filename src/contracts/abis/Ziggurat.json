@@ -1098,6 +1098,11 @@
   },
   {
     "type": "error",
+    "name": "CharacterOperatorNotZigguratError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "ECDSAInvalidSignature",
     "inputs": []
   },
@@ -1141,6 +1146,11 @@
   {
     "type": "error",
     "name": "InvalidSignatureError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoActiveCardsError",
     "inputs": []
   },
   {

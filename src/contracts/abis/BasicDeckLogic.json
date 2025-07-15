@@ -457,6 +457,11 @@
   },
   {
     "type": "error",
+    "name": "PlayerIsAlreadyEliminatedError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "UnknownEffectType",
     "inputs": [
       {

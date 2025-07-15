@@ -361,13 +361,13 @@
     "name": "transferOwnership",
     "inputs": [
       {
-        "name": "",
+        "name": "newOwner",
         "type": "address",
         "internalType": "address"
       }
     ],
     "outputs": [],
-    "stateMutability": "view"
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -507,12 +507,12 @@
   },
   {
     "type": "error",
-    "name": "OnlyOwnerOrOperatorError",
+    "name": "OnlyXorOperatorError",
     "inputs": []
   },
   {
     "type": "error",
-    "name": "OnlyXorOperatorError",
+    "name": "OnlyXorOperatorOrDelegateError",
     "inputs": []
   },
   {
@@ -536,10 +536,5 @@
         "internalType": "address"
       }
     ]
-  },
-  {
-    "type": "error",
-    "name": "OwnershipCannotBeTransferred",
-    "inputs": []
   }
 ]
