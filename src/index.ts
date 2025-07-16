@@ -107,7 +107,7 @@ export default {
 		// Add basic auth header if credentials are provided
 		if (env.RPC_BASIC_AUTH_USER && env.RPC_BASIC_AUTH_PASSWORD) {
 			const authString = `${env.RPC_BASIC_AUTH_USER}:${env.RPC_BASIC_AUTH_PASSWORD}`;
-			const encodedAuth = Buffer.from(authString).toString('base64');
+			const encodedAuth = btoa(authString);
 			headers['Authorization'] = `Basic ${encodedAuth}`;
 		}
 
