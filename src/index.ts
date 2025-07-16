@@ -32,6 +32,8 @@ interface Env {
 	ETH_RPC_URL: string;
 	PRIVATE_KEY: string;
 	ERC2771_FORWARDER_ADDRESS: string;
+	RPC_BASIC_AUTH_USER?: string;
+	RPC_BASIC_AUTH_PASSWORD?: string;
 }
 
 const corsHeaders = {
@@ -97,13 +99,23 @@ export default {
 		// Extract origin from the incoming request URL
 		const origin = new URL(request.url).origin;
 
+		// Build headers with optional basic auth
+		const headers: Record<string, string> = {
+			'Origin': origin
+		};
+
+		// Add basic auth header if credentials are provided
+		if (env.RPC_BASIC_AUTH_USER && env.RPC_BASIC_AUTH_PASSWORD) {
+			const authString = `${env.RPC_BASIC_AUTH_USER}:${env.RPC_BASIC_AUTH_PASSWORD}`;
+			const encodedAuth = Buffer.from(authString).toString('base64');
+			headers['Authorization'] = `Basic ${encodedAuth}`;
+		}
+
 		const walletClient = createWalletClient({
 			account,
 			transport: http(env.ETH_RPC_URL, {
 				fetchOptions: {
-					headers: {
-						'Origin': origin
-					}
+					headers
 				}
 			}),
 		});
