@@ -5,7 +5,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "ready-aim-fire-relayer",
-	"main": "src/index.ts",
+	"main": "src/cloudflare/index.ts",
 	"compatibility_date": "2025-05-21",
 	"observability": {
 		"enabled": true

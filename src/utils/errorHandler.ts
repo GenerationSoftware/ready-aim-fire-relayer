@@ -6,7 +6,8 @@ import {
   RpcRequestError,
   HttpRequestError,
 } from 'viem';
-import { decodeError } from './decode';
+import { decodeError } from './decode.js';
+import { loggers } from './logger.js';
 
 export interface UnifiedError {
   type: 'contract' | 'rpc' | 'network' | 'validation' | 'unknown';
@@ -29,6 +30,7 @@ export interface UnifiedError {
 
 export class ErrorHandler {
   private abis: Abi[];
+  private logger = loggers.errorHandler;
 
   constructor(abis: Abi[]) {
     this.abis = abis;
@@ -121,15 +123,15 @@ export class ErrorHandler {
           // The data might be ABI-encoded with the actual error nested inside
           if (revertData.length > 138) { // Has enough data for wrapped structure
             try {
-              const decoded = decodeError(revertData);
+              const decoded = decodeError(revertData as `0x${string}`);
               if (decoded && decoded.args && decoded.args.length > 0) {
                 // Look for nested error data in the args
                 for (const arg of decoded.args) {
                   if (typeof arg === 'string' && arg.startsWith('0x') && arg.length >= 10) {
                     // Try to decode this as the actual revert data
-                    const nestedDecoded = decodeError(arg);
+                    const nestedDecoded = decodeError(arg as `0x${string}`);
                     if (nestedDecoded) {
-                      // console.log('Found nested error:', nestedDecoded);
+                      this.logger.debug('Found nested error', { nestedDecoded });
                       decodedRevert = nestedDecoded;
                       revertData = arg;
                       break;
@@ -138,20 +140,20 @@ export class ErrorHandler {
                 }
               }
             } catch (e) {
-              console.log('Could not decode wrapped error, trying direct decode');
+              this.logger.debug('Could not decode wrapped error, trying direct decode');
             }
           }
-        } else if (typeof rpcError.data === 'object' && rpcError.data.data) {
-          revertData = rpcError.data.data as `0x${string}`;
+        } else if (typeof rpcError.data === 'object' && rpcError.data && 'data' in rpcError.data) {
+          revertData = (rpcError.data as any).data as `0x${string}`;
         }
       }
       
       // Try to decode the revert data if found
       if (revertData && revertData.length > 2) {
         try {
-          const decoded = decodeError(revertData);
+          const decoded = decodeError(revertData as `0x${string}`);
           if (decoded) {
-            // console.log('Successfully decoded outer error:', decoded);
+            this.logger.debug('Successfully decoded outer error', { decoded });
             
             // Check if this is a wrapper error like FailedCallWithMessage
             if (decoded.errorName === 'FailedCallWithMessage' && decoded.args && decoded.args.length > 0) {
@@ -204,7 +206,7 @@ export class ErrorHandler {
           message: detailedMessage,
           details: {
             selector: revertData!.slice(0, 10),
-            data: revertData,
+            data: revertData || undefined,
             decodedError: decodedRevert,
             rpcError: {
               code: rpcError.code,
@@ -296,16 +298,17 @@ export class ErrorHandler {
 
     // If we have error data, try to decode it
     if (error.data) {
-      const decoded = decodeError(error.data);
+      const errorData = (typeof error.data === 'string' ? error.data : JSON.stringify(error.data)) as `0x${string}`;
+      const decoded = decodeError(errorData);
       if (decoded) {
         // Handle nested errors (like FailedCallWithMessage)
         if (decoded.errorName === 'FailedCallWithMessage' && decoded.args?.[0]) {
-          const nestedDecoded = decodeError(decoded.args[0]);
+          const nestedDecoded = decodeError(decoded.args[0] as `0x${string}`);
           if (nestedDecoded) {
             return {
               message: `Contract reverted: ${nestedDecoded.errorName}`,
-              selector: error.data.slice(0, 10),
-              data: error.data,
+              selector: errorData.slice(0, 10),
+              data: errorData,
               decodedError: decoded,
               nestedErrors: [{
                 type: 'contract',
@@ -320,8 +323,8 @@ export class ErrorHandler {
         
         return {
           message: `Contract reverted: ${decoded.errorName}`,
-          selector: error.data.slice(0, 10),
-          data: error.data,
+          selector: errorData.slice(0, 10),
+          data: errorData,
           decodedError: decoded
         };
       }

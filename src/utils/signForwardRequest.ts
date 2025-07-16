@@ -1,5 +1,5 @@
 import { WalletClient, Address, Hash, Account, PublicClient, type Abi } from 'viem';
-import ERC2771ForwarderABIJson from '../contracts/abis/ERC2771Forwarder.json';
+import ERC2771ForwarderABIJson from '../contracts/abis/ERC2771Forwarder.json' assert { type: 'json' };
 const ERC2771ForwarderABI = ERC2771ForwarderABIJson as Abi;
 
 export interface ForwardRequestData {
@@ -20,11 +20,13 @@ export async function signForwardRequest(
 	request: Omit<ForwardRequestData, 'signature'>,
 	account: Account
 ): Promise<Hash> {
-	const [fields, name, version, chainId, verifyingContract, salt] = await publicClient.readContract({
+	const domainResult = await publicClient.readContract({
 		address: forwarderAddress,
 		abi: ERC2771ForwarderABI,
 		functionName: 'eip712Domain',
-	});
+	}) as any;
+	
+	const [fields, name, version, chainId, verifyingContract, salt] = domainResult;
 
 	const domain = {
 		name,

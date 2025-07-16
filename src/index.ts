@@ -1,41 +1,84 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+#!/usr/bin/env node
 
-import { http, encodeFunctionData, createWalletClient } from 'viem';
-import { privateKeyToAccount } from 'viem/accounts';
-import { ERC2771ForwarderABI, allABIs } from './allAbis';
-import { decodeCallData } from './utils/decode';
-import { ErrorHandler } from './utils/errorHandler';
-import deployments from './contracts/deployments.json';
+import { createServer } from 'node:http';
+import { RelayerService, RelayRequest, RelayerConfig } from './services/RelayerService.js';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { loggers, logConfiguration } from './utils/logger.js';
 
-interface RequestBody {
-	from: `0x${string}`;
-	to: `0x${string}`;
-	data: `0x${string}`;
-	value: bigint;
-	gas: bigint;
-	deadline: bigint;
-	signature: `0x${string}`;
+// Configuration interface
+interface Config {
+	port: number;
+	rpcUrl: string;
+	privateKey: `0x${string}`;
+	forwarderAddress: `0x${string}`;
+	basicAuth?: {
+		username: string;
+		password: string;
+	};
 }
 
-interface Env {
-	ETH_RPC_URL: string;
-	PRIVATE_KEY: string;
-	ERC2771_FORWARDER_ADDRESS: string;
-	RPC_BASIC_AUTH_USER?: string;
-	RPC_BASIC_AUTH_PASSWORD?: string;
+// Load configuration from environment variables or config file
+function loadConfig(): Config {
+	// Try to load from config file first
+	const configPath = path.join(process.cwd(), 'relayer.config.json');
+	if (fs.existsSync(configPath)) {
+		const configFile = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+		return {
+			port: configFile.port || 3000,
+			rpcUrl: configFile.rpcUrl || process.env.ETH_RPC_URL || '',
+			privateKey: (configFile.privateKey || process.env.PRIVATE_KEY || '') as `0x${string}`,
+			forwarderAddress: (configFile.forwarderAddress || process.env.ERC2771_FORWARDER_ADDRESS || '') as `0x${string}`,
+			basicAuth: configFile.basicAuth || (
+				process.env.RPC_BASIC_AUTH_USER && process.env.RPC_BASIC_AUTH_PASSWORD ? {
+					username: process.env.RPC_BASIC_AUTH_USER,
+					password: process.env.RPC_BASIC_AUTH_PASSWORD,
+				} : undefined
+			),
+		};
+	}
+
+	// Fall back to environment variables
+	return {
+		port: parseInt(process.env.PORT || '3000', 10),
+		rpcUrl: process.env.ETH_RPC_URL || '',
+		privateKey: (process.env.PRIVATE_KEY || '') as `0x${string}`,
+		forwarderAddress: (process.env.ERC2771_FORWARDER_ADDRESS || '') as `0x${string}`,
+		basicAuth: process.env.RPC_BASIC_AUTH_USER && process.env.RPC_BASIC_AUTH_PASSWORD ? {
+			username: process.env.RPC_BASIC_AUTH_USER,
+			password: process.env.RPC_BASIC_AUTH_PASSWORD,
+		} : undefined,
+	};
 }
 
+// Validate configuration
+function validateConfig(config: Config): void {
+	const logger = loggers.cli;
+	const errors: string[] = [];
+
+	if (!config.rpcUrl) {
+		errors.push('ETH_RPC_URL is required');
+	}
+
+	if (!config.privateKey || !config.privateKey.startsWith('0x')) {
+		errors.push('PRIVATE_KEY is required and must start with 0x');
+	}
+
+	if (!config.forwarderAddress || !config.forwarderAddress.startsWith('0x')) {
+		errors.push('ERC2771_FORWARDER_ADDRESS is required and must start with 0x');
+	}
+
+	if (errors.length > 0) {
+		logger.error('Configuration errors:');
+		errors.forEach(error => logger.error(`  - ${error}`));
+		logger.error('\nYou can provide configuration via:');
+		logger.error('  1. Environment variables: ETH_RPC_URL, PRIVATE_KEY, ERC2771_FORWARDER_ADDRESS');
+		logger.error('  2. Configuration file: relayer.config.json in the current directory');
+		process.exit(1);
+	}
+}
+
+// CORS headers
 const corsHeaders = {
 	'Content-Type': 'application/json',
 	'Access-Control-Allow-Origin': '*',
@@ -43,160 +86,114 @@ const corsHeaders = {
 	'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-/**
- * Handles incoming requests to forward ERC-2771 transactions.
- * 
- * @param request - The incoming request object containing the transaction details.
- * @param env - The environment object containing configuration like ETH_RPC_URL and PRIVATE_KEY.
- * @param ctx - The execution context for the request.
- * @returns A Response object containing the transaction hash or an error message.
- * 
- * @example
- * // Example request body
- * {
- *   from: '0x...', // The address of the sender.
- *   to: '0x...', // The address of the recipient or contract.
- *   data: '0x...', // The encoded function call data.
- *   value: 1000000000000000000n, // The amount of ETH to send with the transaction.
- *   gas: 21000n, // The gas limit for the transaction.
- *   deadline: 1234567890n, // The deadline for the transaction to be executed.
- *   signature: '0x...' // The signature of the transaction.
- * }
- * 
- * @example
- * // Example response body
- * {
- *   transactionHash: '0x...' // The hash of the sent transaction.
- * }
- * 
- * @example
- * // Example error response body
- * {
- *   error: 'Transaction reverted: ...' // The error message if the transaction fails.
- * }
- */
-export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		if (request.method === 'OPTIONS') {
-			return new Response(null, { headers: corsHeaders });
+// Main server function
+async function startServer() {
+	const logger = loggers.cli;
+	
+	// Log configuration on startup
+	logConfiguration();
+	
+	const config = loadConfig();
+	validateConfig(config);
+
+	// Create RelayerService instance
+	const relayerConfig: RelayerConfig = {
+		rpcUrl: config.rpcUrl,
+		privateKey: config.privateKey,
+		forwarderAddress: config.forwarderAddress,
+		basicAuth: config.basicAuth,
+	};
+
+	const relayer = new RelayerService(relayerConfig);
+
+	// Create HTTP server
+	const server = createServer(async (req, res) => {
+		const requestId = Math.random().toString(36).substring(7);
+		const requestLogger = logger.child({ requestId, method: req.method, url: req.url });
+		
+		// Handle CORS preflight
+		if (req.method === 'OPTIONS') {
+			requestLogger.debug('Handling CORS preflight');
+			res.writeHead(200, corsHeaders);
+			res.end();
+			return;
 		}
 
-		const json = await request.json() as RequestBody;
-
-		console.log('Request body:', json);
-
-		console.log('Calldata ', decodeCallData(json.data));
-
-		if (!env.PRIVATE_KEY) {
-			return new Response(JSON.stringify({ error: 'Private key is not defined' }), {
-				status: 500,
-				headers: corsHeaders,
-			});
+		// Only accept POST requests
+		if (req.method !== 'POST') {
+			requestLogger.warn('Method not allowed');
+			res.writeHead(405, corsHeaders);
+			res.end(JSON.stringify({ error: 'Method not allowed' }));
+			return;
 		}
 
-		const account = privateKeyToAccount(env.PRIVATE_KEY as `0x${string}`);
-
-		// Extract origin from the incoming request URL
-		const origin = new URL(request.url).origin;
-
-		// Build headers with optional basic auth
-		const headers: Record<string, string> = {
-			'Origin': origin
-		};
-
-		// Add basic auth header if credentials are provided
-		if (env.RPC_BASIC_AUTH_USER && env.RPC_BASIC_AUTH_PASSWORD) {
-			const authString = `${env.RPC_BASIC_AUTH_USER}:${env.RPC_BASIC_AUTH_PASSWORD}`;
-			const encodedAuth = btoa(authString);
-			headers['Authorization'] = `Basic ${encodedAuth}`;
-		}
-
-		const walletClient = createWalletClient({
-			account,
-			transport: http(env.ETH_RPC_URL, {
-				fetchOptions: {
-					headers
-				}
-			}),
+		// Parse request body
+		let body = '';
+		req.on('data', chunk => {
+			body += chunk.toString();
 		});
 
-		const { from, to, data, value, gas, deadline, signature } = json;
-
-		if (!to || !data) {
-			return new Response(JSON.stringify({ error: 'Missing required fields: to and data' }), {
-				status: 400,
-				headers: corsHeaders,
-			});
-		}
-
-		// Get BattleFactory address from deployments.json
-		const battleFactoryDeployment = deployments.find(d => d.contractName === 'BattleFactory');
-		if (!battleFactoryDeployment) {
-			return new Response(JSON.stringify({ error: 'BattleFactory deployment not found' }), {
-				status: 500,
-				headers: corsHeaders,
-			});
-		}
-		const battleFactoryAddress = battleFactoryDeployment.contractAddress;
-
-		try {
-			let recipient;
-			let calldata;
-			if (to.toLowerCase() === battleFactoryAddress.toLowerCase()) {
-				recipient = to
-				calldata = data
-			} else {
-				recipient = env.ERC2771_FORWARDER_ADDRESS as `0x${string}`
-				calldata = encodeFunctionData({
-					abi: ERC2771ForwarderABI,
-					functionName: 'execute',
-					args: [{
-						from,
-						to,
-						value: 0n,
-						gas,
-						deadline: Number(deadline),
-						data,
-						signature
-					}],
+		req.on('end', async () => {
+			try {
+				const request = JSON.parse(body) as RelayRequest;
+				requestLogger.info('Received relay request', {
+					from: request.from,
+					to: request.to,
+					value: request.value?.toString(),
+					gas: request.gas?.toString()
 				});
-			}
+				
+				// Process the relay request
+				const result = await relayer.relay(request);
 
-			// @ts-ignore
-			const transactionHash = await walletClient.sendTransaction({
-				to: recipient,
-				data: calldata
-			});
-			console.log('Transaction sent:', transactionHash);
-			return new Response(JSON.stringify({ transactionHash }), { headers: corsHeaders });
-		} catch (error) {
-			// Initialize error handler with all ABIs
-			const errorHandler = new ErrorHandler(allABIs);
-			const unifiedError = errorHandler.handleError(error);
-			
-			console.log('Unified error:', JSON.stringify(unifiedError, null, 2));
-			
-			// Determine appropriate HTTP status code
-			let status = 500;
-			if (unifiedError.type === 'validation') {
-				status = 400;
-			} else if (unifiedError.type === 'network') {
-				status = 503;
-			} else if (unifiedError.type === 'rpc' && unifiedError.code) {
-				// Map common RPC error codes to HTTP status codes
-				if (unifiedError.code === -32602 || unifiedError.code === -32600) {
-					status = 400; // Invalid params or request
+				// Send response
+				if ('error' in result) {
+					const status = result.errorType === 'validation' ? 400 : 
+					               result.errorType === 'network' ? 503 : 500;
+					requestLogger.error('Request failed', {
+						status,
+						error: result.error,
+						errorType: result.errorType
+					});
+					res.writeHead(status, corsHeaders);
+				} else {
+					requestLogger.info('Request successful', {
+						transactionHash: result.transactionHash
+					});
+					res.writeHead(200, corsHeaders);
 				}
+				
+				res.end(JSON.stringify(result));
+			} catch (error) {
+				requestLogger.error('Request processing error', { error });
+				res.writeHead(400, corsHeaders);
+				res.end(JSON.stringify({ error: 'Invalid request format' }));
 			}
-			
-			return new Response(JSON.stringify({ 
-				error: unifiedError.message,
-				errorType: unifiedError.type,
-				errorDetails: unifiedError.details
-			}), {
-				status,
-				headers: corsHeaders,
-			});
-		}
-	},
-} satisfies ExportedHandler<Env>;
+		});
+	});
+
+	// Start listening
+	server.listen(config.port, () => {
+		logger.info('🚀 Relayer service started', {
+			port: config.port,
+			rpcUrl: config.rpcUrl,
+			forwarderAddress: config.forwarderAddress,
+			hasBasicAuth: !!config.basicAuth
+		});
+	});
+
+	// Handle graceful shutdown
+	process.on('SIGINT', () => {
+		logger.info('⏹️  Shutting down gracefully...');
+		server.close(() => {
+			logger.info('✅ Server closed');
+			process.exit(0);
+		});
+	});
+}
+
+// Start the server
+startServer().catch(error => {
+	loggers.cli.fatal('Failed to start server', { error });
+	process.exit(1);
+});

@@ -1,0 +1,10 @@
+{
+  "port": 3000,
+  "rpcUrl": "https://your-ethereum-rpc-url.com",
+  "privateKey": "0xYourPrivateKeyHere",
+  "forwarderAddress": "0xYourERC2771ForwarderAddressHere",
+  "basicAuth": {
+    "username": "your-username",
+    "password": "your-password"
+  }
+}

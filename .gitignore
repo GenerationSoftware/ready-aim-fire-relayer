@@ -175,3 +175,6 @@ dist
 
 .history
 .claude
+
+# Relayer configuration
+relayer.config.json

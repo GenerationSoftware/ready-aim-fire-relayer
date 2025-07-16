@@ -1,17 +1,17 @@
 import { type Abi } from 'viem';
-import BasicDeckABIJson from './contracts/abis/BasicDeck.json';
-import BasicDeckLogicABIJson from './contracts/abis/BasicDeckLogic.json';
-import BattleABIJson from './contracts/abis/Battle.json';
-import BattleFactoryABIJson from './contracts/abis/BattleFactory.json';
-import CharacterABIJson from './contracts/abis/Character.json';
-import CharacterFactoryABIJson from './contracts/abis/CharacterFactory.json';
-import DeckConfigurationABIJson from './contracts/abis/DeckConfiguration.json';
-import ERC2771ForwarderABIJson from './contracts/abis/ERC2771Forwarder.json';
-import MinterABIJson from './contracts/abis/Minter.json';
-import MonsterRegistryABIJson from './contracts/abis/MonsterRegistry.json';
-import PlayerStatsStorageABIJson from './contracts/abis/PlayerStatsStorage.json';
-import ZigguratABIJson from './contracts/abis/Ziggurat.json';
-import ZigguratSingletonABIJson from './contracts/abis/ZigguratSingleton.json';
+import BasicDeckABIJson from './contracts/abis/BasicDeck.json' assert { type: 'json' };
+import BasicDeckLogicABIJson from './contracts/abis/BasicDeckLogic.json' assert { type: 'json' };
+import BattleABIJson from './contracts/abis/Battle.json' assert { type: 'json' };
+import BattleFactoryABIJson from './contracts/abis/BattleFactory.json' assert { type: 'json' };
+import CharacterABIJson from './contracts/abis/Character.json' assert { type: 'json' };
+import CharacterFactoryABIJson from './contracts/abis/CharacterFactory.json' assert { type: 'json' };
+import DeckConfigurationABIJson from './contracts/abis/DeckConfiguration.json' assert { type: 'json' };
+import ERC2771ForwarderABIJson from './contracts/abis/ERC2771Forwarder.json' assert { type: 'json' };
+import MinterABIJson from './contracts/abis/Minter.json' assert { type: 'json' };
+import MonsterRegistryABIJson from './contracts/abis/MonsterRegistry.json' assert { type: 'json' };
+import PlayerStatsStorageABIJson from './contracts/abis/PlayerStatsStorage.json' assert { type: 'json' };
+import ZigguratABIJson from './contracts/abis/Ziggurat.json' assert { type: 'json' };
+import ZigguratSingletonABIJson from './contracts/abis/ZigguratSingleton.json' assert { type: 'json' };
 
 // Type cast all ABIs
 export const BasicDeckABI = BasicDeckABIJson as Abi;
